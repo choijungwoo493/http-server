@@ -6,10 +6,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.nhnacademy.httpserver.PropertySetter.ArgsPropertySetter;
 import com.nhnacademy.httpserver.PropertySetter.ContentPropretySetter;
 import com.nhnacademy.httpserver.PropertySetter.DataPropertySetter;
 import com.nhnacademy.httpserver.PropertySetter.JsonPropertySetter;
+import com.nhnacademy.httpserver.vo.PostMultipartVo;
 
 import java.awt.desktop.OpenURIEvent;
 import java.io.BufferedWriter;
@@ -81,9 +83,15 @@ public class Server {
                 jsonProperty = jsonPropertySetter.getJsonProperty();
 
             }
+            if (query.equals("/post") && contentType.startsWith("multipart/form-data")) {
+                PostMultipartVo postMultipartVo = new PostMultipartVo(request, origin);
+                responseBody.append(postMultipartVo);
+            }
+
+
 
             //todo
-            if (query.startsWith("/post")){
+            if (query.startsWith("/post") && !contentType.startsWith("multipart")){
                 responseBody.append("{").append(lineSeparator())
                             .append("   \"args\": {},").append(lineSeparator())
                             .append("   \"data\": ")
